@@ -46,7 +46,13 @@ self.addEventListener('fetch', (event: FetchEvent) => {
       let token: string | undefined;
       if (client) token = await askForAccessToken(client);
 
-      return fetch(url, fetchConfig(token));
+      const resp = await fetch(url, fetchConfig(token));
+      console.log(`[SW] ${url} response status: ${resp.status}`);
+      if (!resp.ok) {
+        console.log(`[SW] ${url} response status: ${resp.status} Body: ${await resp.text()}`);
+      }
+
+      return resp;
     })()
   );
 });
